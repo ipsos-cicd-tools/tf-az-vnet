@@ -1,22 +1,6 @@
-## Setup Instructions (delete this section)
+# Terraform az-tf-vnet Module
 
-1. Create new repo in the **ipsos-cicd-tools** Github org using this repo as the template in the drop down option. 
-    - Use the naming schema **"tf-(CLOUD-PROVIDER)-(MODULE-NAME)"** 
-        - CLOUD-PROVIDER can be `gcp`, `az`, or `aws`
-        - Be sure to keep it all in lowercase
-
-2. Branch protection is enabled for `main` so any changes will need to be made via Pull Requests 
-
-3. Rename the folder `/modules/module_name` to the name of your module.  example: `/modules/cloud-run-service`
-
-4. Delete this section of the README and use the rest as a template for setting one up
-<br>
-<br>
-
-
-# Terraform $REPO_NAME Module
-
-Brief description of module
+Module for creation of Virtual networks in Azure
 
 ## Compatibility
 Any compatability concerns go here
