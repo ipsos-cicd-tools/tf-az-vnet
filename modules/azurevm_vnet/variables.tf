@@ -33,7 +33,8 @@ variable "subnets" {
   type = map(object(
     {
       # name             = string
-      address_prefixes = list(string)
+      address_prefixes                  = list(string)
+      private_endpoint_network_policies = string
       delegation = optional(list(
         object({
           name = string
