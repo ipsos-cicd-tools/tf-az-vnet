@@ -22,10 +22,11 @@ resource "azurerm_virtual_network" "default" {
 resource "azurerm_subnet" "subnet" {
   for_each = local.subnet_names
 
-  name                 = each.value
-  resource_group_name  = var.resource_group_name
-  virtual_network_name = azurerm_virtual_network.default.name
-  address_prefixes     = var.subnets[each.value].address_prefixes
+  name                              = each.value
+  resource_group_name               = var.resource_group_name
+  virtual_network_name              = azurerm_virtual_network.default.name
+  address_prefixes                  = var.subnets[each.value].address_prefixes
+  private_endpoint_network_policies = var.subnets[each.value].private_endpoint_network_policies
 
   dynamic "delegation" {
     for_each = var.subnets[each.value].delegation == null ? [] : var.subnets[each.value].delegation
