@@ -35,6 +35,7 @@ variable "subnets" {
       # name             = string
       address_prefixes                  = list(string)
       private_endpoint_network_policies = string
+      service_endpoints                 = optional(list(string))
       delegation = optional(list(
         object({
           name = string
