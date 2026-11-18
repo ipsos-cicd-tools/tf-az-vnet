@@ -36,6 +36,10 @@ variable "subnets" {
       address_prefixes                  = list(string)
       private_endpoint_network_policies = string
       service_endpoints                 = optional(list(string))
+      # Route this subnet's outbound internet traffic through var.nat_gateway.
+      nat_gateway_enabled = optional(bool, false)
+      # null = provider default. Set false so NAT/firewall is the only egress path.
+      default_outbound_access_enabled = optional(bool)
       delegation = optional(list(
         object({
           name = string
@@ -50,5 +54,34 @@ variable "subnets" {
   #     error_message = "The subnet name must only contain letters, numbers, hyphens or underscores."
   #   }
   description = "Subnets to create"
+}
+
+variable "nat_gateway" {
+  type = object({
+    name                    = string
+    sku_name                = optional(string, "Standard")
+    idle_timeout_in_minutes = optional(number, 4)
+    # Standard: omit for no-zone or set a single zone. StandardV2: must be omitted (zone-redundant).
+    zones = optional(list(string))
+    # Defaults to "pip-<name>".
+    public_ip_name = optional(string)
+  })
+  default     = null
+  description = "Optional NAT Gateway with a static public IP for fixed-address outbound internet access. Attach it to subnets with subnets[*].nat_gateway_enabled. Null (default) creates nothing."
+
+  validation {
+    condition     = var.nat_gateway == null || contains(["Standard", "StandardV2"], try(var.nat_gateway.sku_name, ""))
+    error_message = "nat_gateway.sku_name must be Standard or StandardV2."
+  }
+
+  validation {
+    condition     = var.nat_gateway == null || try(var.nat_gateway.sku_name, "") != "StandardV2" || try(var.nat_gateway.zones, null) == null
+    error_message = "nat_gateway.zones must be omitted when sku_name is StandardV2."
+  }
+
+  validation {
+    condition     = var.nat_gateway == null || (try(var.nat_gateway.idle_timeout_in_minutes, 4) >= 4 && try(var.nat_gateway.idle_timeout_in_minutes, 4) <= 120)
+    error_message = "nat_gateway.idle_timeout_in_minutes must be between 4 and 120."
+  }
 }
 
